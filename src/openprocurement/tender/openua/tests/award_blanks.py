@@ -1691,13 +1691,13 @@ def create_tender_lots_award_complaint(self):
     self.assertEqual(response.status, "201 Created")
     self.assertEqual(response.content_type, "application/json")
     complaint = response.json["data"]
+    owner_token = response.json["access"]["token"]
     self.assertEqual(complaint["author"]["name"], test_organization["name"])
     self.assertIn("id", complaint)
     self.assertIn(complaint["id"], response.headers["Location"])
 
     if RELEASE_2020_04_19 < get_now():
         self.assertEqual(response.json["data"]["status"], "draft")
-        owner_token = response.json["access"]["token"]
 
         response = self.app.patch_json(
             "/tenders/{}/awards/{}/complaints/{}?acc_token={}".format(
