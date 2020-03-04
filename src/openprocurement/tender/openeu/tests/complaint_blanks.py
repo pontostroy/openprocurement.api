@@ -1,23 +1,9 @@
 # -*- coding: utf-8 -*-
-from openprocurement.api.constants import RELEASE_2020_04_19
-from openprocurement.api.utils import get_now
 
 # TenderComplaintDocumentResourceTest
 
 
 def put_tender_complaint_document(self):
-
-    if RELEASE_2020_04_19 < get_now():
-
-        response = self.app.patch_json(
-             "/tenders/{}/qualifications/{}/complaints/{}?acc_token={}".format(
-                 self.tender_id, self.qualification_id, self.complaint_id, self.complaint_owner_token),
-            {"data": {"status": "pending"}},
-        )
-        self.assertEqual(response.status, "200 OK")
-        self.assertEqual(response.content_type, "application/json")
-        self.assertEqual(response.json["data"]["status"], "pending")
-
     response = self.app.post(
         "/tenders/{}/complaints/{}/documents?acc_token={}".format(
             self.tender_id, self.complaint_id, self.complaint_owner_token
