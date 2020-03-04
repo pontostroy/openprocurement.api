@@ -38,10 +38,13 @@ class TenderNegotiationAwardComplaintResource(BaseTenderAwardComplaintResource):
         return sum([len(i.complaints) for i in tender.awards])
 
     def pre_create(self):
+        tender = self.request.validated["tender"]
+        old_rules = get_first_revision_date(tender) < RELEASE_2020_04_19
+
         complaint = self.request.validated["complaint"]
         complaint.date = get_now()
         complaint.type = "complaint"
-        if complaint.status == "pending":
+        if old_rules and complaint.status == "pending":
             complaint.dateSubmitted = get_now()
         else:
             complaint.status = "draft"

@@ -55,13 +55,15 @@ class TenderEUQualificationComplaintResource(TenderEUAwardComplaintResource):
         """Post a complaint
         """
         tender = self.request.validated["tender"]
+        old_rules = get_first_revision_date(tender) < RELEASE_2020_04_19
+
         complaint = self.request.validated["complaint"]
         complaint.relatedLot = self.context.lotID
         complaint.date = get_now()
         complaint.bid_id = get_bid_id(self.request)
         if complaint.status == "claim":
             complaint.dateSubmitted = get_now()
-        elif complaint.status == "pending":
+        elif old_rules and complaint.status == "pending":
             complaint.type = "complaint"
             complaint.dateSubmitted = get_now()
         else:

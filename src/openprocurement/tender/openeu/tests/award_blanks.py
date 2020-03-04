@@ -386,8 +386,8 @@ def patch_tender_award_active(self):
         owner_token = response.json["access"]["token"]
 
         response = self.app.patch_json(
-            "/tenders/{}/awards/{}/complaints/{}?acc_token={}".format(
-                self.tender_id, self.award_id, response.json["data"]["id"], owner_token),
+             new_award_location[-81:] + "/complaints/{}?acc_token={}".format(
+                response.json["data"]["id"], owner_token),
             {"data": {"status": "pending"}},
         )
         self.assertEqual(response.status, "200 OK")
