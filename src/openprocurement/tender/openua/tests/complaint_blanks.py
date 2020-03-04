@@ -235,6 +235,7 @@ def patch_tender_complaint(self):
 
 
 def review_tender_complaint(self):
+    now = get_now()
     for status in ["invalid", "stopped", "satisfied", "declined"]:
         self.app.authorization = ("Basic", ("broker", ""))
         response = self.app.post_json(
@@ -251,6 +252,18 @@ def review_tender_complaint(self):
         self.assertEqual(response.status, "201 Created")
         self.assertEqual(response.content_type, "application/json")
         complaint = response.json["data"]
+        owner_token = response.json["access"]["token"]
+
+        if RELEASE_2020_04_19 < now:
+            self.assertEqual(response.json["data"]["status"], "draft")
+
+            response = self.app.patch_json(
+                "/tenders/{}/complaints/{}?acc_token={}".format(self.tender_id, complaint["id"], owner_token),
+                {"data": {"status": "pending"}},
+            )
+            self.assertEqual(response.status, "200 OK")
+            self.assertEqual(response.content_type, "application/json")
+            self.assertEqual(response.json["data"]["status"], "pending")
 
         self.app.authorization = ("Basic", ("reviewer", ""))
         response = self.app.patch_json(
@@ -262,8 +275,7 @@ def review_tender_complaint(self):
         self.assertEqual(response.json["data"]["decision"], "{} complaint".format(status))
         self.assertEqual(response.json["data"]["rejectReasonDescription"], "reject reason")
 
-        if status in ["satisfied", "declined"]:
-            now = get_now()
+        if status in ["satisfied", "declined", "stopped"]:
             data = {"status": "accepted"}
             if RELEASE_2020_04_19 < now:
                 data.update({
@@ -494,7 +506,8 @@ def review_tender_stopping_complaint(self):
     if RELEASE_2020_04_19 > now:
         statuses = ["satisfied", "stopped", "declined", "mistaken", "invalid"]
     else:
-        statuses = ["satisfied", "stopped", "declined", "invalid"]
+        statuses = ["satisfied", "declined", "invalid"]
+
     for status in statuses:
         self.app.authorization = ("Basic", ("broker", ""))
         response = self.app.post_json(
@@ -514,6 +527,16 @@ def review_tender_stopping_complaint(self):
         owner_token = response.json["access"]["token"]
 
         url_patch_complaint = "/tenders/{}/complaints/{}".format(self.tender_id, complaint["id"])
+
+        if RELEASE_2020_04_19 < now:
+            response = self.app.patch_json(
+                "{}?acc_token={}".format(url_patch_complaint, owner_token),
+                {"data": {"status": "pending"}},
+            )
+            self.assertEqual(response.status, "200 OK")
+            self.assertEqual(response.content_type, "application/json")
+            self.assertEqual(response.json["data"]["status"], "pending")
+
         response = self.app.patch_json(
             "{}?acc_token={}".format(url_patch_complaint, owner_token),
             {"data": {"status": "stopping", "cancellationReason": "reason"}},

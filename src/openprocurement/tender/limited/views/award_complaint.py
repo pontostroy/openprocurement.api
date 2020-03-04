@@ -131,6 +131,7 @@ class TenderNegotiationAwardComplaintResource(BaseTenderAwardComplaintResource):
         new_status = data.get("status", status)
 
         tender = self.request.validated["tender"]
+        old_rules = get_first_revision_date(tender) < RELEASE_2020_04_19
 
         if status in ["pending", "accepted", "stopping"] and new_status == status:
             apply_patch(self.request, save=False, src=self.context.serialize())
@@ -138,7 +139,7 @@ class TenderNegotiationAwardComplaintResource(BaseTenderAwardComplaintResource):
         elif (
             status in ["pending", "stopping"] 
             and (
-                (not get_first_revision_date(tender) > RELEASE_2020_04_19 and new_status in ["invalid", "mistaken"])
+                (old_rules and new_status in ["invalid", "mistaken"])
                 or (new_status == "invalid")
             )
         ):
@@ -155,7 +156,11 @@ class TenderNegotiationAwardComplaintResource(BaseTenderAwardComplaintResource):
             apply_patch(self.request, save=False, src=self.context.serialize())
             self.context.dateDecision = get_now()
 
-        elif status in ["pending", "accepted", "stopping"] and new_status == "stopped":
+        elif (
+            (old_rules and status in ["pending", "accepted", "stopping"])
+            or (not old_rules and status == "accepted")
+            and new_status == "stopped"
+        ):
             apply_patch(self.request, save=False, src=self.context.serialize())
             self.context.dateDecision = get_now()
             self.context.dateCanceled = self.context.dateCanceled or get_now()

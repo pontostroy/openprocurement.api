@@ -60,6 +60,9 @@ class BaseTenderAwardComplaintResource(BaseTenderComplaintResource):
             raise_operation_error(self.request, "Claim submission is not allowed on pending award")
 
     def pre_create(self):
+        tender = self.request.validated["tender"]
+        old_rules = get_first_revision_date(tender) < RELEASE_2020_04_19
+
         complaint = self.request.validated["complaint"]
         complaint.date = get_now()
         complaint.relatedLot = self.context.lotID
@@ -68,7 +71,7 @@ class BaseTenderAwardComplaintResource(BaseTenderComplaintResource):
         if complaint.status == "claim":   # claim
             self.validate_posting_claim()
             complaint.dateSubmitted = get_now()
-        elif complaint.status == "pending":  # complaint
+        elif old_rules and complaint.status == "pending":  # complaint
             self.validate_posting_complaint()
             complaint.type = "complaint"
             complaint.dateSubmitted = get_now()
@@ -259,7 +262,11 @@ class BaseTenderAwardComplaintResource(BaseTenderComplaintResource):
             if new_status == "satisfied":
                 self.on_satisfy_complaint_by_reviewer()
 
-        elif status in ["pending", "accepted", "stopping"] and new_status == "stopped":
+        elif (
+            (old_rules and status in ["pending", "accepted", "stopping"])
+            or (not old_rules and status == "accepted")
+            and new_status == "stopped"
+        ):
             apply_patch(self.request, save=False, src=context.serialize())
             context.dateDecision = get_now()
             context.dateCanceled = context.dateCanceled or get_now()

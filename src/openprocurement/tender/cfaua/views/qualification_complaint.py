@@ -245,7 +245,8 @@ class TenderEUQualificationComplaintResource(TenderEUAwardComplaintResource):
                 tender.qualificationPeriod.endDate = None
         elif (
             self.request.authenticated_role == "aboveThresholdReviewers"
-            and status in ["pending", "accepted", "stopping"]
+            and ((not new_rules and status in ["pending", "accepted", "stopping"])
+                 or (new_rules and status == "accepted"))
             and new_status == "stopped"
         ):
             apply_patch(self.request, save=False, src=self.context.serialize())
