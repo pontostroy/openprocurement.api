@@ -752,7 +752,7 @@ def cancel_lot_with_complaint(self):
 
         response = self.app.patch_json(
             "/tenders/{}/awards/{}/complaints/{}?acc_token={}".format(
-                self.tender_id, self.award_id, complaint["id"], owner_token),
+                self.tender_id, award["id"], complaint["id"], owner_token),
             {"data": {"status": "pending"}},
         )
         self.assertEqual(response.status, "200 OK")
@@ -762,7 +762,7 @@ def cancel_lot_with_complaint(self):
     # set complaint status stopping to be able to cancel the lot
     response = self.app.patch_json(
         "/tenders/{}/awards/{}/complaints/{}?acc_token={}".format(
-            self.tender_id, award["id"], response.json["data"]["id"], response.json["access"]["token"]
+            self.tender_id, award["id"], response.json["data"]["id"], owner_token
         ),
         {"data": {
             "status": "stopping",
