@@ -31,13 +31,13 @@ jobs:
         - DB_NAME=test_prod
     - sndbox_2020_04_19:
       env: 
-        - DB_NAME=test_prod_2020_04_19
+        - DB_NAME=test_sandbox_2020_04_19
         - SANDBOX_MODE=1
         - DEFAULT_RELEASE_2020_04_19=2020-01-01
     - prod_2020_04_19: 
       env: 
         - SANDBOX_MODE=
-        - DB_NAME=test_sandbox_2020_04_1
+        - DB_NAME=test_prod_2020_04_1
         - DEFAULT_RELEASE_2020_04_19=2020-01-01
 script:
   - python setup.py test
