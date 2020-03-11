@@ -1,6 +1,6 @@
-language: python
-python:
-  - "2.7"
+language: gneric
+# python:
+#   - "2.7"
 services: docker
 # addons:
 #   hosts:
@@ -49,6 +49,6 @@ jobs:
         - DEFAULT_RELEASE_2020_04_19=2020-01-01
 script:
   - docker run -it python:2.7 sh -c 'cd /usr && \
-      ls && echo $SANDBOX_MODE %% echo $DB_NAME > /proc/1/fd/1'
+      echo $SANDBOX_MODE %% echo $DB_NAME > /proc/1/fd/1'
 # after_success:
 #   - bin/coveralls
