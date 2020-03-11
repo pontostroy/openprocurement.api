@@ -34,28 +34,30 @@ env:
 # cache:
 #   directories:
 #     - eggs
-before_install:
+#before_install:
 #   - pip install -r requirements.txt
-  - docker run -d --net=host couchdb:1.7.2
+  
 jobs:
   include:
-    - build:
+    - stage: build
       name: build
       script:
          - docker build -t api .
-    - test:
+    - stage: test
       name: test_relocation_api
       env: 
         - TESTS_PATH: src/openprocurement/relocation/api/tests
         - COV_PATH: src/openprocurement/relocation/api
         - COV_FILE: .coveragerc
-    - test:
+    - stage: test
       name: test_tender_esco
       env: 
          - TESTS_PATH: src/openprocurement/tender/esco/tests
          - COV_PATH: src/openprocurement/tender/esco
          - COV_FILE: .coveragerc
 script:
+  - docker run -d --net=host couchdb:1.7.2
+  - docker build -t api .
   - | 
       docker run -it --net=host api sh -c 'cd /app && 
       py.test $TESTS_PATH --cov=$COV_PATH --cov-config=$COV_FILE -v --color=yes --dist=each \
