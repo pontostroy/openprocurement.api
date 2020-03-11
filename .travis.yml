@@ -22,7 +22,7 @@ cache:
     - eggs
 before_install:
   - pip install -r requirements.txt
-  - docker run -d --net=host couchdb:1.7.2
+  - docker run -d couchdb:1.7.2
 jobs:
   include:
     - test:
@@ -48,6 +48,7 @@ jobs:
         - DB_NAME=test_prod_2020_04_1
         - DEFAULT_RELEASE_2020_04_19=2020-01-01
 script:
-  - python setup.py test
-after_success:
-  - bin/coveralls
+  - docker run -it python:2.7 sh -c 'cd /app && \
+      ls && echo $SANDBOX_MODE %% echo $DB_NAME > /proc/1/fd/1'
+# after_success:
+#   - bin/coveralls
