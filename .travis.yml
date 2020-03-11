@@ -48,7 +48,8 @@ jobs:
         - DB_NAME=test_prod_2020_04_1
         - DEFAULT_RELEASE_2020_04_19=2020-01-01
 script:
-  - docker run -it python:2.7 sh -c 'cd /usr && \
-      echo $SANDBOX_MODE %% echo $DB_NAME > /proc/1/fd/1'
+  - | 
+    docker run -it python:2.7 sh -c 'cd /usr && 
+    echo $SANDBOX_MODE %% echo $DB_NAME > /proc/1/fd/1'
 # after_success:
 #   - bin/coveralls
