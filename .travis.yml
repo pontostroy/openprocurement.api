@@ -1,57 +1,42 @@
 language: generic
 dist: xenial
-# python:
-#   - "2.7"
 services: docker
 addons:
   hosts:
     - couchdb
     - localhost
 sudo: required
-# before_script:
-#     - sudo apt-get update
-#     - sudo apt-get install -y libsodium-dev
-# addons:
-#   apt:
-#     packages:
-#       - docker-ce
 
 git:
   depth: 1
 
-# workflows:
-#   version: 2
-#   build_and_test:
-#     jobs:
-#       - build
-#       - test:
-#           requires:
-#             - build
-#           filters:
-#             branches:
-#               only: pontostroy
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+          filters:
+            branches:
+              only: pontostroy
 
 env:
   global:
     - TZ=Europe/Kiev
-    - SINGLE_APP=1
     - COUCHDB_USER=op   
     - COUCHDB_PASSWORD=op
-# cache:
-#   directories:
-#     - eggs
-#before_install:
-#   - pip install -r requirements.txt
   
 jobs:
   include:
-#     - stage: build
-#       name: build
-#       script:
-#          - docker info
-#          - docker login -u $USER -p $PASS docker.pkg.github.com
-#          - docker build -t docker.pkg.github.com/pontostroy/openprocurement.api/api:$TRAVIS_BRANCH .
-#          - docker push docker.pkg.github.com/pontostroy/openprocurement.api/api:$TRAVIS_BRANCH
+    - stage: build
+      name: build
+      script:
+         - docker info
+         - docker login -u $USER -p $PASS docker.pkg.github.com
+         - docker build -t docker.pkg.github.com/pontostroy/openprocurement.api/api:$TRAVIS_BRANCH .
+         - docker push docker.pkg.github.com/pontostroy/openprocurement.api/api:$TRAVIS_BRANCH
     - stage: test
       name: test_relocation_api
       env: 
@@ -143,9 +128,11 @@ script:
   - sleep 5 && docker ps && lsof -i || true
   - docker login -u $USER -p $PASS docker.pkg.github.com
   - | 
-      docker run -it --add-host=couchdb:127.0.0.1 -e TESTS_PATH=$TESTS_PATH -e COV_PATH=$COV_PATH -e COV_FILE=$COV_FILE \
+      docker run -it --add-host=couchdb:127.0.0.1 -e TZ=$TZ -e TESTS_PATH=$TESTS_PATH -e COV_PATH=$COV_PATH -e COV_FILE=$COV_FILE \
       --net=host docker.pkg.github.com/pontostroy/openprocurement.api/api:$TRAVIS_BRANCH sh -c 'cd /app && 
       py.test $TESTS_PATH --cov=$COV_PATH --cov-config=$COV_FILE -v --color=yes --dist=each \
+      --tx=popen//id=sand//env:DB_NAME=test_sandbox//env:SANDBOX_MODE=1//env:SINGLE_APP=1 \
+      --tx=popen//id=prod//env:DB_NAME=test_prod//env:SANDBOX_MODE=//env:SINGLE_APP=1 \
       --tx=popen//id=sand_relsease_2020_04_19//env:DB_NAME=test_sandbox_2020_04_19//env:SANDBOX_MODE=1//env:SINGLE_APP=1//env:DEFAULT_RELEASE_2020_04_19=2020-01-01 \
       --tx=popen//id=prod_relsease_2020_04_19//env:DB_NAME=test_prod_2020_04_19//env:SANDBOX_MODE=//env:SINGLE_APP=1//env:DEFAULT_RELEASE_2020_04_19=2020-01-01 > /proc/1/fd/1'
 # after_success:
