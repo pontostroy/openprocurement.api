@@ -26,27 +26,17 @@ before_install:
 jobs:
   include:
     - test:
-      name: sandbox
+      name: test_relocation_api
       env: 
-        - DB_NAME=test_sandbox
-        - SANDBOX_MODE=1
+        - TESTS_PATH: src/openprocurement/relocation/api/tests
+        - COV_PATH: src/openprocurement/relocation/api
+        - COV_FILE: .coveragerc
     - test:
-      name: prod
+      name: test_tender_esco
       env: 
-        - SANDBOX_MODE=
-        - DB_NAME=test_prod
-    - test:
-      name: sandbox_020_04_19
-      env: 
-        - DB_NAME=test_sandbox_2020_04_19
-        - SANDBOX_MODE=1
-        - DEFAULT_RELEASE_2020_04_19=2020-01-01
-    - test:
-      name: prod_020_04_19
-      env: 
-        - SANDBOX_MODE=
-        - DB_NAME=test_prod_2020_04_1
-        - DEFAULT_RELEASE_2020_04_19=2020-01-01
+         - TESTS_PATH: src/openprocurement/tender/esco/tests
+         - COV_PATH: src/openprocurement/tender/esco
+         - COV_FILE: .coveragerc
 script:
   - docker build -t api .
   - | 
