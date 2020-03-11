@@ -47,8 +47,6 @@ jobs:
     - stage: build
       name: build
       script:
-         - df -h
-         - mount
          - docker info
          - docker login -u $USER -p $PASS docker.pkg.github.com
          - docker build -t docker.pkg.github.com/pontostroy/openprocurement.api/api:$TRAVIS_BRANCH .
@@ -139,7 +137,8 @@ jobs:
          - COV_FILE: src/openprocurement/tender/competitivedialogue/tests/stage1/.coveragerc
      
 script:
-  - docker run -d -e COUCHDB_USER=$COUCHDB_USER -e COUCHDB_PASSWORD=$COUCHDB_PASSWORD --net=host couchdb:1.6
+  - mkdir -p /dev/shm/couch
+  - docker run -d -v /dev/shm/couch:/usr/local/var/lib/couchdb -e COUCHDB_USER=$COUCHDB_USER -e COUCHDB_PASSWORD=$COUCHDB_PASSWORD --net=host apache/couchdb:1.7
   - docker login -u $USER -p $PASS docker.pkg.github.com
   - | 
       docker run -it --net=host docker.pkg.github.com/pontostroy/openprocurement.api/api:$TRAVIS_BRANCH sh -c 'cd /app && 
