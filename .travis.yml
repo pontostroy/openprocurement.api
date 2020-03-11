@@ -1,10 +1,9 @@
 language: python
 sudo: required
-group: deprecated-2017Q4
 before_script:
-  - sudo add-apt-repository ppa:chris-lea/libsodium -y
-  - sudo apt-get -qq update
-  - sudo apt-get install libsodium13 -y
+    - apt-get update
+    - apt-get install -y libsodium-dev
+    - pip install --upgrade pip setuptools
 python:
   - "2.7"
 services:
@@ -21,11 +20,9 @@ cache:
   directories:
     - eggs
 before_install:
-  - pip install setuptools==7.0
-  - python2 bootstrap.py
-install:
-  - bin/buildout -N
+  - pip install --upgrade pip 
+  - pip install -r requirements.txt
 script:
-  - bin/nosetests
+  - python setup.py test
 after_success:
   - bin/coveralls
