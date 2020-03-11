@@ -1,4 +1,6 @@
 language: python
+python:
+  - "2.7"
 services: docker
 addons:
   hosts:
@@ -7,7 +9,6 @@ sudo: required
 before_script:
     - sudo apt-get update
     - sudo apt-get install -y libsodium-dev
-    - sudo pip install --upgrade pip setuptools
 python:
   - "2.7"
 env:
@@ -24,20 +25,24 @@ before_install:
   - docker run -d --net=host couchdb:1.7.2
 jobs:
   include:
-    - sandbox:
+    - test:
+      name: sandbox
       env: 
         - DB_NAME=test_sandbox
         - SANDBOX_MODE=1
-    - prod: 
+    - test:
+      name: prod
       env: 
         - SANDBOX_MODE=
         - DB_NAME=test_prod
-    - sndbox_2020_04_19:
+    - test:
+      name: sandbox_020_04_19
       env: 
         - DB_NAME=test_sandbox_2020_04_19
         - SANDBOX_MODE=1
         - DEFAULT_RELEASE_2020_04_19=2020-01-01
-    - prod_2020_04_19: 
+    - test:
+      name: prod_020_04_19
       env: 
         - SANDBOX_MODE=
         - DB_NAME=test_prod_2020_04_1
