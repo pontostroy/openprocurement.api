@@ -56,7 +56,7 @@ jobs:
          - COV_PATH: src/openprocurement/tender/esco
          - COV_FILE: .coveragerc
 script:
-  - docker run -d --net=host couchdb:1.7.2
+  - docker run -d -e COUCHDB_USER=$COUCHDB_USER -e COUCHDB_PASSWORD=$COUCHDB_PASSWORD --net=host couchdb:1.7.2
   - docker build -t api .
   - | 
       docker run -it --net=host api sh -c 'cd /app && 
