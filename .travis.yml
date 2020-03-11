@@ -9,8 +9,22 @@ sudo: required
 # before_script:
 #     - sudo apt-get update
 #     - sudo apt-get install -y libsodium-dev
-python:
-  - "2.7"
+
+git:
+  depth: 1
+
+workflows:
+  version: 2
+  build_and_test:
+    jobs:
+      - build
+      - test:
+          requires:
+            - build
+          filters:
+            branches:
+              only: pontostroy
+
 env:
   global:
     - TZ=Europe/Kiev
@@ -23,6 +37,10 @@ env:
 before_install:
 #   - pip install -r requirements.txt
   - docker run -d --net=host couchdb:1.7.2
+build:
+  name: build
+  script:
+     - docker build -t api .
 jobs:
   include:
     - test:
@@ -38,7 +56,6 @@ jobs:
          - COV_PATH: src/openprocurement/tender/esco
          - COV_FILE: .coveragerc
 script:
-  - docker build -t api .
   - | 
       docker run -it --net=host api sh -c 'cd /app && 
       py.test $TESTS_PATH --cov=$COV_PATH --cov-config=$COV_FILE -v --color=yes --dist=each \
