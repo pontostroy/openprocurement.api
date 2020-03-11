@@ -55,6 +55,79 @@ jobs:
          - TESTS_PATH: src/openprocurement/tender/esco/tests
          - COV_PATH: src/openprocurement/tender/esco
          - COV_FILE: .coveragerc
+    - stage: test
+      name: test_tender_openeu
+      env: 
+         - TESTS_PATH: src/openprocurement/tender/openeu/tests
+         - COV_PATH: src/openprocurement/tender/openeu
+         - COV_FILE: .coveragerc   
+    - stage: test
+      name: test_tender_cfaua
+      env: 
+         - TESTS_PATH: src/openprocurement/tender/cfaua/tests
+         - COV_PATH: src/openprocurement/tender/cfaua
+         - COV_FILE: .coveragerc   
+    - stage: test
+      name: test_tender_comp_stage2
+      env: 
+         - TESTS_PATH: src/openprocurement/tender/competitivedialogue/tests/stage2
+         - COV_PATH: src/openprocurement/tender/competitivedialogue/
+         - COV_FILE: src/openprocurement/tender/competitivedialogue/tests/stage2/.coveragerc
+   - stage: test
+      name: test_tender_core
+      env: 
+         - TESTS_PATH: src/openprocurement/tender/core/tests
+         - COV_PATH: src/openprocurement/tender/core
+         - COV_FILE: .coveragerc
+   - stage: test
+      name: test_api
+      env: 
+         - TESTS_PATH: src/openprocurement/api/tests
+         - COV_PATH: src/openprocurement/api
+         - COV_FILE: .coveragerc
+    - stage: test
+      name: test_agreement_core
+      env: 
+         - TESTS_PATH: src/openprocurement/agreement/core/tests
+         - COV_PATH: src/openprocurement/agreement/core
+         - COV_FILE: .coveragerc
+ - stage: test
+      name: test_agreement_cfaua
+      env: 
+         - TESTS_PATH: src/openprocurement/agreement/cfaua/tests
+         - COV_PATH: src/openprocurement/agreement/cfaua
+         - COV_FILE: .coveragerc
+   - stage: test
+      name: test_contracting_api
+      env: 
+         - TESTS_PATH: src/openprocurement/contracting/api/tests
+         - COV_PATH: src/openprocurement/contracting/api
+         - COV_FILE: .coveragerc
+    - stage: test
+      name: test_planning_ap
+      env: 
+         - TESTS_PATH: src/openprocurement/planning/api/tests
+         - COV_PATH: src/openprocurement/planning/api
+         - COV_FILE: .coveragerc
+    - stage: test
+      name: test_historical_core
+      env: 
+         - TESTS_PATH: src/openprocurement/historical/core/tests
+         - COV_PATH: src/openprocurement/historical/core
+         - COV_FILE: .coveragerc
+    - stage: test
+      name: test_historical_tender
+      env: 
+         - TESTS_PATH: src/openprocurement/historical/tender/tests
+         - COV_PATH: src/openprocurement/historical/tender
+         - COV_FILE: .coveragerc
+    - stage: test
+      name: test_tender_comp_stage1
+      env: 
+         - TESTS_PATH: src/openprocurement/tender/competitivedialogue/tests/stage1
+         - COV_PATH: src/openprocurement/tender/competitivedialogue/
+         - COV_FILE: src/openprocurement/tender/competitivedialogue/tests/stage1/.coveragerc
+     
 script:
   - docker run -d -e COUCHDB_USER=$COUCHDB_USER -e COUCHDB_PASSWORD=$COUCHDB_PASSWORD --net=host couchdb:1.7.2
   - docker build -t api .
