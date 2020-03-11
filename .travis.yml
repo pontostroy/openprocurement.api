@@ -42,7 +42,9 @@ jobs:
     - stage: build
       name: build
       script:
-         - docker build -t api .
+         - docker login -u $USER -p $PASS docker.pkg.github.com
+         - docker build -t docker.pkg.github.com/pontostroy/openprocurement.api/api:TRAVIS_BRANCH .
+         - docker push docker.pkg.github.com/pontostroy/openprocurement.api/api:TRAVIS_BRANCH
     - stage: test
       name: test_relocation_api
       env: 
@@ -130,14 +132,14 @@ jobs:
      
 script:
   - docker run -d -e COUCHDB_USER=$COUCHDB_USER -e COUCHDB_PASSWORD=$COUCHDB_PASSWORD --net=host couchdb:1.7.2
-  - docker build -t api .
+  - docker login -u $USER -p $PASS docker.pkg.github.com
   - | 
-      docker run -it --net=host api sh -c 'cd /app && 
-      py.test $TESTS_PATH --cov=$COV_PATH --cov-config=$COV_FILE -v --color=yes --dist=each \
-      --tx=popen//id=sand//env:DB_NAME=test_sandbox//env:SANDBOX_MODE=1//env:SINGLE_APP=1 \
-      --tx=popen//id=prod//env:DB_NAME=test_prod//env:SANDBOX_MODE=//env:SINGLE_APP=1 \
-      --tx=popen//id=sand_relsease_2020_04_19//env:DB_NAME=test_sandbox_2020_04_19//env:SANDBOX_MODE=1//env:SINGLE_APP=1//env:DEFAULT_RELEASE_2020_04_19=2020-01-01 \
+      docker run -it --net=host docker.pkg.github.com/pontostroy/openprocurement.api/api:TRAVIS_BRANCH sh -c 'cd /app && 
+      py.test $TESTS_PATH --cov=$COV_PATH --cov-config=$COV_FILE -v --color=no --dist=each \
       --tx=popen//id=prod_relsease_2020_04_19//env:DB_NAME=test_prod_2020_04_19//env:SANDBOX_MODE=//env:SINGLE_APP=1//env:DEFAULT_RELEASE_2020_04_19=2020-01-01 \
       > /proc/1/fd/1'
 # after_success:
 #   - bin/coveralls
+#      --tx=popen//id=sand//env:DB_NAME=test_sandbox//env:SANDBOX_MODE=1//env:SINGLE_APP=1 \
+#      --tx=popen//id=prod//env:DB_NAME=test_prod//env:SANDBOX_MODE=//env:SINGLE_APP=1 \
+#      --tx=popen//id=sand_relsease_2020_04_19//env:DB_NAME=test_sandbox_2020_04_19//env:SANDBOX_MODE=1//env:SINGLE_APP=1//env:DEFAULT_RELEASE_2020_04_19=2020-01-01 \
