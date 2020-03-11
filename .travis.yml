@@ -12,19 +12,34 @@ env:
   global:
     - TZ=Europe/Kiev
     - SINGLE_APP=1
-    - DEFAULT_RELEASE_2020_04_19=2020-01-01
     - COUCHDB_USER=op   
     - COUCHDB_PASSWORD=op
-  matrix:
-    - SANDBOX_MODE=
-    - SANDBOX_MODE=True
 cache:
   directories:
     - eggs
 before_install:
   - pip install -r requirements.txt
   - docker run -d --net=host couchdb:1.7.2
-  - echo '127.0.0.1  couchdb' >> /etc/hosts
+jobs:
+  include:
+    - sandbox:
+      env: 
+        - DB_NAME=test_sandbox
+        - SANDBOX_MODE=1
+    - prod: 
+      env: 
+        - SANDBOX_MODE=
+        - DB_NAME=test_prod
+    - sndbox_2020_04_19:
+      env: 
+        - DB_NAME=test_prod_2020_04_19
+        - SANDBOX_MODE=1
+        - DEFAULT_RELEASE_2020_04_19=2020-01-01
+    - prod_2020_04_19: 
+      env: 
+        - SANDBOX_MODE=
+        - DB_NAME=test_sandbox_2020_04_1
+        - DEFAULT_RELEASE_2020_04_19=2020-01-01
 script:
   - python setup.py test
 after_success:
