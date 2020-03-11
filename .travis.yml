@@ -146,8 +146,8 @@ script:
       docker run -it --add-host=couchdb:127.0.0.1 -e TESTS_PATH=$TESTS_PATH -e COV_PATH=$COV_PATH -e COV_FILE=$COV_FILE \
       --net=host docker.pkg.github.com/pontostroy/openprocurement.api/api:$TRAVIS_BRANCH sh -c 'cd /app && 
       py.test $TESTS_PATH --cov=$COV_PATH --cov-config=$COV_FILE -v --color=yes --dist=each \
-      --tx=popen//id=prod_relsease_2020_04_19//env:DB_NAME=test_prod_2020_04_19//env:SANDBOX_MODE=//env:SINGLE_APP=1//env:DEFAULT_RELEASE_2020_04_19=2020-01-01 \
-      > /proc/1/fd/1'
+      --tx=popen//id=prod_relsease_2020_04_19//env:DB_NAME=test_prod_2020_04_19//env:SANDBOX_MODE=//env:SINGLE_APP=1//env:DEFAULT_RELEASE_2020_04_19=2020-01-01
+      && coveralls > /proc/1/fd/1'
 # after_success:
 #   - bin/coveralls
 #      --tx=popen//id=sand//env:DB_NAME=test_sandbox//env:SANDBOX_MODE=1//env:SINGLE_APP=1 \
