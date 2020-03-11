@@ -13,6 +13,8 @@ env:
     - TZ=Europe/Kiev
     - SINGLE_APP=1
     - DEFAULT_RELEASE_2020_04_19=2020-01-01
+    - COUCHDB_USER=op   
+    - COUCHDB_PASSWORD=op
   matrix:
     - SANDBOX_MODE=
     - SANDBOX_MODE=True
