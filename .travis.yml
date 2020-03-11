@@ -49,7 +49,7 @@ jobs:
         - DEFAULT_RELEASE_2020_04_19=2020-01-01
 script:
   - | 
-    docker run -it python:2.7 sh -c 'cd /usr && 
+    docker run -it -e SANDBOX_MODE=$SANDBOX_MODE -e DB_NAME=$DB_NAME -e DEFAULT_RELEASE_2020_04_19=$DEFAULT_RELEASE_2020_04_19 python:2.7 sh -c 'cd /usr && 
     echo $SANDBOX_MODE %% echo $DB_NAME > /proc/1/fd/1'
 # after_success:
 #   - bin/coveralls
