@@ -41,7 +41,7 @@ jobs:
   include:
     - build:
       name: build
-        script:
+      script:
          - docker build -t api .
     - test:
       name: test_relocation_api
