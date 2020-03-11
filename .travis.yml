@@ -6,6 +6,7 @@ services: docker
 addons:
   hosts:
     - couchdb
+    - localhost
 sudo: required
 # before_script:
 #     - sudo apt-get update
