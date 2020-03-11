@@ -38,11 +38,11 @@ before_install:
 #   - pip install -r requirements.txt
   - docker run -d --net=host couchdb:1.7.2
 jobs:
-  build:
-  name: build
-  script:
-     - docker build -t api .
   include:
+    - build:
+      name: build
+        script:
+         - docker build -t api .
     - test:
       name: test_relocation_api
       env: 
