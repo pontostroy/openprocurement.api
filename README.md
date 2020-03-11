@@ -1,3 +1,4 @@
+[![Build Status](https://travis-ci.org/pontostroy/openprocurement.api.svg?branch=pontostroy)](https://travis-ci.org/pontostroy/openprocurement.api)
 # OpenProcurement Api
 
 ## Installation
