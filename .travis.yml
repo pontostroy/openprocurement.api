@@ -1,4 +1,4 @@
-language: bash
+language: generic
 dist: xenial
 # python:
 #   - "2.7"
@@ -140,6 +140,7 @@ jobs:
 script:
   - mkdir -p /dev/shm/couch
   - docker run -d -v /dev/shm/couch:/usr/local/var/lib/couchdb -e COUCHDB_USER=$COUCHDB_USER -e COUCHDB_PASSWORD=$COUCHDB_PASSWORD --net=host apache/couchdb:1.7
+  - sleep 5 && docker ps && lsof -i || true
   - docker login -u $USER -p $PASS docker.pkg.github.com
   - | 
       docker run -it --net=host docker.pkg.github.com/pontostroy/openprocurement.api/api:$TRAVIS_BRANCH sh -c 'cd /app && 
