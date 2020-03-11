@@ -62,8 +62,8 @@ jobs:
          - COV_PATH: src/openprocurement/tender/openeu
          - COV_FILE: .coveragerc   
     - stage: test
-       name: test_tender_cfaua
-       env: 
+      name: test_tender_cfaua
+      env: 
          - TESTS_PATH: src/openprocurement/tender/cfaua/tests
          - COV_PATH: src/openprocurement/tender/cfaua
          - COV_FILE: .coveragerc   
@@ -80,8 +80,8 @@ jobs:
          - COV_PATH: src/openprocurement/tender/core
          - COV_FILE: .coveragerc
     - stage: test
-       name: test_api
-       env: 
+      name: test_api
+      env: 
          - TESTS_PATH: src/openprocurement/api/tests
          - COV_PATH: src/openprocurement/api
          - COV_FILE: .coveragerc
