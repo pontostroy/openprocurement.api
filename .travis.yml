@@ -1,13 +1,13 @@
 language: python
+services: docker
 sudo: required
 before_script:
     - sudo apt-get update
     - sudo apt-get install -y libsodium-dev
     - sudo pip install --upgrade pip setuptools
+    - sudo 
 python:
   - "2.7"
-services:
-  - couchdb
 env:
   global:
     - TZ=Europe/Kiev
@@ -23,6 +23,8 @@ cache:
     - eggs
 before_install:
   - pip install -r requirements.txt
+  - docker run -d --net=host couchdb:1.7.2
+  - echo '127.0.0.1  couchdb' >> /etc/hosts
 script:
   - python setup.py test
 after_success:
