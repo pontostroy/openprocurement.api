@@ -2,13 +2,13 @@ language: python
 python:
   - "2.7"
 services: docker
-addons:
-  hosts:
-    - couchdb
+# addons:
+#   hosts:
+#     - couchdb
 sudo: required
-before_script:
-    - sudo apt-get update
-    - sudo apt-get install -y libsodium-dev
+# before_script:
+#     - sudo apt-get update
+#     - sudo apt-get install -y libsodium-dev
 python:
   - "2.7"
 env:
@@ -17,11 +17,11 @@ env:
     - SINGLE_APP=1
     - COUCHDB_USER=op   
     - COUCHDB_PASSWORD=op
-cache:
-  directories:
-    - eggs
+# cache:
+#   directories:
+#     - eggs
 before_install:
-  - pip install -r requirements.txt
+#   - pip install -r requirements.txt
   - docker run -d couchdb:1.7.2
 jobs:
   include:
@@ -48,7 +48,7 @@ jobs:
         - DB_NAME=test_prod_2020_04_1
         - DEFAULT_RELEASE_2020_04_19=2020-01-01
 script:
-  - docker run -it python:2.7 sh -c 'cd /app && \
+  - docker run -it python:2.7 sh -c 'cd /usr && \
       ls && echo $SANDBOX_MODE %% echo $DB_NAME > /proc/1/fd/1'
 # after_success:
 #   - bin/coveralls
