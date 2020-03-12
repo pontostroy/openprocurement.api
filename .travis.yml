@@ -121,7 +121,42 @@ jobs:
          - TESTS_PATH: src/openprocurement/tender/competitivedialogue/tests/stage1
          - COV_PATH: src/openprocurement/tender/competitivedialogue/
          - COV_FILE: src/openprocurement/tender/competitivedialogue/tests/stage1/.coveragerc
-     
+    - stage: test
+      name: test_tender_limited
+      env: 
+         - TESTS_PATH: src/openprocurement/tender/limited/tests
+         - COV_PATH: src/openprocurement/tender/limited
+         - COV_FILE: .coveragerc
+    - stage: test
+      name: test_tender_openua
+      env: 
+         - TESTS_PATH: src/openprocurement/tender/openua/tests
+         - COV_PATH: src/openprocurement/tender/openua
+         - COV_FILE: .coveragerc
+    - stage: test
+      name: test_historical_core
+      env: 
+         - TESTS_PATH: src/openprocurement/historical/core/tests
+         - COV_PATH: src/openprocurement/historical/core
+         - COV_FILE: .coveragerc
+    - stage: test
+      name: test_tender_belowthreshold
+      env: 
+         - TESTS_PATH: src/openprocurement/tender/belowthreshold/tests
+         - COV_PATH: src/openprocurement/tender/belowthreshold
+         - COV_FILE: .coveragerc
+    - stage: test
+      name: test_tender_openuadefense
+      env: 
+         - TESTS_PATH: src/openprocurement/tender/openuadefense/tests
+         - COV_PATH: src/openprocurement/tender/openuadefense
+         - COV_FILE: .coveragerc
+    - stage: test
+      name: test_tender_cfaselectionua
+      env: 
+         - TESTS_PATH: src/openprocurement/tender/cfaselectionua/tests
+         - COV_PATH: src/openprocurement/tender/cfaselectionua
+         - COV_FILE: .coveragerc
 script:
   - mkdir -p /dev/shm/couch
   - docker run -d -v /dev/shm/couch:/usr/local/var/lib/couchdb -e COUCHDB_USER=$COUCHDB_USER -e COUCHDB_PASSWORD=$COUCHDB_PASSWORD --net=host couchdb:1.7
